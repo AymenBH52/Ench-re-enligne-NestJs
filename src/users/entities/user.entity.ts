@@ -1,11 +1,15 @@
 /* eslint-disable prettier/prettier */
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Role } from './role.entity';
+import { Enchere } from 'src/enchere/entities/enchere.entity';
 
 @Entity()
 export class User {
@@ -34,23 +38,20 @@ export class User {
   profilePicture: string;
 
   @Column()
-  state: string;
-
-  @Column()
-  stateid: string;
-
-  @Column()
   country: string;
 
   @Column()
   countryid: string;
 
-  @Column()
-  jobTitle: string;
-
-  @Column({ nullable: true })
-  about: string;
-
   @ManyToOne(() => Role, (role) => role.users, { eager: true })
   role: Role;
+
+  @OneToMany(() => Enchere, (auction) => auction.createdBy)
+  encheres: Enchere[];
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

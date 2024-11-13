@@ -12,10 +12,6 @@ export class UserResponseDto {
   isActive: boolean;
 
   profilePicture: string;
-  state: string;
-  stateid: string;
   country: string;
   countryid: string;
-  jobTitle: string;
-  about: string;
 }

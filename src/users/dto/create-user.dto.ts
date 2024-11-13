@@ -49,25 +49,9 @@ export class CreateUserDto {
 
   @IsString()
   @IsOptional()
-  state?: string;
-
-  @IsString()
-  @IsOptional()
-  stateid?: string;
-
-  @IsString()
-  @IsOptional()
   country?: string;
 
   @IsString()
   @IsOptional()
   countryid?: string;
-
-  @IsString()
-  @IsOptional()
-  jobTitle?: string;
-
-  @IsString()
-  @IsOptional()
-  about?: string;
 }

@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { RolesGuard } from './auth/guards/roles.guard';
 import { UsersService } from './users/services/users.service';
 import { UsersModule } from './users/users.module';
+import { EnchereModule } from './enchere/enchere.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -30,6 +31,8 @@ import { UsersModule } from './users/users.module';
       }),
       inject: [ConfigService],
     }),
+
+    EnchereModule,
   ],
   controllers: [AppController],
   providers: [
