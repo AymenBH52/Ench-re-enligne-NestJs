@@ -54,4 +54,7 @@ export class UpdateUserDto {
   @IsString()
   @IsOptional()
   countryid?: string;
+
+  @IsOptional()
+  rating?: number;
 }

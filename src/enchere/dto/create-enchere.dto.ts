@@ -1,27 +1,30 @@
-import { IsString, IsNumber, IsNotEmpty, Min, IsDate } from 'class-validator';
+import {
+  IsString,
+  IsDate,
+  IsEnum,
+  IsOptional,
+  IsNumber,
+} from 'class-validator';
+import { StatusEnum } from '../enums/enums';
 import { User } from 'src/users/entities/user.entity';
 
 export class CreateEnchereDto {
   @IsString()
-  @IsNotEmpty()
   title: string;
 
   @IsString()
-  @IsNotEmpty()
   description: string;
 
   @IsDate()
-  @IsNotEmpty()
   startDate: Date;
 
-  @IsDate()
-  @IsNotEmpty()
-  endDate: Date;
-
+  @IsOptional()
   @IsNumber()
-  @Min(1)
-  duration: number;
+  duration?: number;
 
-  @IsNotEmpty()
-  user: User;
+  @IsEnum(StatusEnum)
+  status: StatusEnum;
+
+  @IsOptional()
+  image: any;
 }

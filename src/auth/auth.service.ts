@@ -20,9 +20,13 @@ export class AuthService {
     const user = await this.usersService.findByUsername(username);
     const isMatch: boolean = bcrypt.compareSync(pass, user.password);
     if (user && isMatch) {
+      console.log('user', user);
+
       const { password, ...result } = user;
       return result;
     }
+    console.log('user not found');
+
     return null;
   }
 

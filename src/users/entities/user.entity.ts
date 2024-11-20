@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { Role } from './role.entity';
 import { Enchere } from 'src/enchere/entities/enchere.entity';
+import { Subscribers } from 'src/subscribers/subscribers.entity';
 
 @Entity()
 export class User {
@@ -46,12 +47,18 @@ export class User {
   @ManyToOne(() => Role, (role) => role.users, { eager: true })
   role: Role;
 
-  @OneToMany(() => Enchere, (auction) => auction.createdBy)
+  @OneToMany(() => Enchere, (auction) => auction.seller)
   encheres: Enchere[];
+
+  @OneToMany(() => Subscribers, (subscribers) => subscribers.user)
+  subscribers: Subscribers[];
 
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @Column({ nullable: true, default: 0 })
+  rating: number;
 }

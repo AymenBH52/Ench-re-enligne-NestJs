@@ -8,7 +8,6 @@ import {
   IsEnum,
   IsBoolean,
   IsOptional,
-  ValidateNested,
 } from 'class-validator';
 import { Role } from '../entities/role.entity';
 import { RoleEnum } from '../enums/enums';
@@ -54,4 +53,7 @@ export class CreateUserDto {
   @IsString()
   @IsOptional()
   countryid?: string;
+
+  @IsOptional()
+  rating?: number;
 }

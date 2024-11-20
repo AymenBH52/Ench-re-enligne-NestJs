@@ -110,5 +110,4 @@ export class UsersService {
     await this.userRepository.save(user);
     return user;
   }
-  //**Update user profile picture**
 }
