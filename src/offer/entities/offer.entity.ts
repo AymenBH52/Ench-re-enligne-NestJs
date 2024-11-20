@@ -8,16 +8,15 @@ export class Offer {
   id: number;
 
   @Column('decimal', { precision: 10, scale: 2 })
-  amount: number; // Montant de l'offre
-
+  amount: number; 
   @ManyToOne(() => User, user => user.offers)
   @JoinColumn({ name: 'userId' })
-  user: User; // L'utilisateur qui a fait l'offre
+  user: User; 
 
   @ManyToOne(() => Enchere, enchere => enchere.offers)
   @JoinColumn({ name: 'enchereId' })
-  enchere: Enchere; // L'enchère sur laquelle l'offre est faite
+  enchere: Enchere; 
 
   @Column({ default: false })
-  isWinner: boolean; // Si cette offre est la gagnante
+  isWinner: boolean; 
 }
