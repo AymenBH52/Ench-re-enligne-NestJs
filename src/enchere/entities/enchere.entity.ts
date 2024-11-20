@@ -11,6 +11,7 @@ import {
 import { StatusEnum } from '../enums/enums';
 import { Subscription } from 'src/subscribers/subscription.entity';
 import { Product } from 'src/product/entities/product.entity';
+import { Offer } from 'src/offer/entities/offer.entity';
 
 @Entity()
 export class Enchere {
@@ -58,4 +59,9 @@ export class Enchere {
 
   @Column({ nullable: true, default: 0 })
   viewCount: number;
+
+  //Relation with Offer
+  @OneToMany(() => Offer, (offer) => offer.enchere)
+  offers: Offer[];
+
 }

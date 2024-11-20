@@ -11,6 +11,7 @@ import {
 import { Role } from './role.entity';
 import { Enchere } from 'src/enchere/entities/enchere.entity';
 import { Subscription } from 'src/subscribers/subscription.entity';
+import { Offer } from 'src/offer/entities/offer.entity';
 
 @Entity()
 export class User {
@@ -61,4 +62,8 @@ export class User {
 
   @Column({ nullable: true, default: 0 })
   rating: number;
+
+  //Relatiion with Offer
+  @OneToMany(() => Offer, (offer) => offer.user)
+  offers: Offer[];
 }
