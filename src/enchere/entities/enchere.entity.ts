@@ -5,9 +5,12 @@ import {
   Column,
   ManyToOne,
   OneToMany,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
 import { StatusEnum } from '../enums/enums';
 import { Subscription } from 'src/subscribers/subscription.entity';
+import { Product } from 'src/product/entities/product.entity';
 
 @Entity()
 export class Enchere {
@@ -19,7 +22,7 @@ export class Enchere {
 
   @Column()
   description: string;
-/* 
+
   @Column({ type: 'timestamp' })
   startDate: Date;
 
@@ -30,7 +33,7 @@ export class Enchere {
   duration: number;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  createdAt: Date; */
+  createdAt: Date;
 
   @Column('enum', { enum: StatusEnum })
   status: StatusEnum;
@@ -40,6 +43,10 @@ export class Enchere {
 
   @OneToMany(() => Subscription, (subscribers) => subscribers.enchere)
   subscribers: Subscription[];
+
+  @OneToOne(() => Product, { onDelete: 'CASCADE', eager: true })
+  @JoinColumn()
+  product: Product;
 
   @Column({ nullable: true })
   image?: string;

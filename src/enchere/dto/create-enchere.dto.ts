@@ -6,7 +6,7 @@ import {
   IsNumber,
 } from 'class-validator';
 import { StatusEnum } from '../enums/enums';
-import { User } from 'src/users/entities/user.entity';
+import { Product } from 'src/product/entities/product.entity';
 
 export class CreateEnchereDto {
   @IsString()
@@ -27,4 +27,7 @@ export class CreateEnchereDto {
 
   @IsOptional()
   image: any;
+
+  @IsOptional()
+  product: any;
 }

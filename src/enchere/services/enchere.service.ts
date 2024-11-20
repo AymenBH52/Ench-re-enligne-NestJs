@@ -41,12 +41,15 @@ export class EnchereService {
     file: Express.Multer.File,
   ): Promise<Enchere> {
     console.log('USER: ', req.user);
+
+    const prod = JSON.parse(createEnchereDto.product);
     try {
       const user = await this.usersService.findByUsername(req.user.username);
       console.log(createEnchereDto);
       const enchere = this.enchereRepository.create({
         ...createEnchereDto,
         seller: user.id,
+        product: prod,
       });
       if (file) {
         enchere.image = file.filename;
@@ -55,7 +58,7 @@ export class EnchereService {
       return this.enchereRepository.save(enchere);
     } catch (error) {
       console.log('ERROR: ', error);
-      throw new Error('Error creating enchere');
+      throw new Error('Error creating enchere: ' + error);
     }
   }
 
