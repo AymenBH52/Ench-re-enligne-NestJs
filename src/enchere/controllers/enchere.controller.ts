@@ -63,7 +63,7 @@ export class EnchereController {
 
   @Post(':id/close')
   async closeEnchere(@Request() req: any, @Param('id') enchereId: number) {
-    return this.enchereService.closeEnchere(req, enchereId);
+    return this.enchereService.endEnchere(req, enchereId);
   }
 
   @Get(':id')

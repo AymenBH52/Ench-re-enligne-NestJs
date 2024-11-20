@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { Role } from './role.entity';
 import { Enchere } from 'src/enchere/entities/enchere.entity';
-import { Subscribers } from 'src/subscribers/subscribers.entity';
+import { Subscription } from 'src/subscribers/subscription.entity';
 
 @Entity()
 export class User {
@@ -50,8 +50,8 @@ export class User {
   @OneToMany(() => Enchere, (auction) => auction.seller)
   encheres: Enchere[];
 
-  @OneToMany(() => Subscribers, (subscribers) => subscribers.user)
-  subscribers: Subscribers[];
+  @OneToMany(() => Subscription, (subscribers) => subscribers.user)
+  subscribers: Subscription[];
 
   @CreateDateColumn()
   createdAt: Date;

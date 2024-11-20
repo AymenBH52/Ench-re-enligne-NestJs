@@ -22,7 +22,7 @@ import { StatusEnum } from '../enums/enums';
 import { CreateEnchereDto } from '../dto/create-enchere.dto';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { UsersService } from 'src/users/services/users.service';
-import { Subscribers } from 'src/subscribers/subscribers.entity';
+import { Subscription } from 'src/subscribers/subscription.entity';
 
 @Injectable()
 export class EnchereService {
@@ -30,8 +30,8 @@ export class EnchereService {
     @InjectRepository(Enchere)
     private enchereRepository: Repository<Enchere>,
     private usersService: UsersService,
-    @InjectRepository(Subscribers)
-    private readonly subscriptionRepository: Repository<Subscribers>,
+    @InjectRepository(Subscription)
+    private readonly subscriptionRepository: Repository<Subscription>,
   ) {}
 
   @UseGuards(JwtGuard)
@@ -85,13 +85,13 @@ export class EnchereService {
   }
 
   @UseGuards(JwtGuard)
-  async closeEnchere(@Request() req: any, enchereId: number): Promise<Enchere> {
+  async endEnchere(@Request() req: any, enchereId: number): Promise<Enchere> {
     const enchere = await this.enchereRepository.findOne({
       where: { id: enchereId },
     });
     if (
       enchere &&
-      enchere.status === StatusEnum.OPEN &&
+      enchere.status === StatusEnum.RUNNING &&
       enchere.endDate < new Date() &&
       enchere.startDate < new Date()
     ) {
@@ -100,7 +100,7 @@ export class EnchereService {
       if (enchere.seller !== user.id) {
         throw new Error('You are not allowed to close this enchere');
       }
-      enchere.status = StatusEnum.CLOSED;
+      enchere.status = StatusEnum.ENDED;
       return this.enchereRepository.save(enchere);
     }
     throw new Error('Enchere not found');
@@ -174,7 +174,7 @@ export class EnchereService {
     const auctions = await this.enchereRepository.find({
       where: {
         startDate: Between(startRange, endRange),
-        status: StatusEnum.OPEN,
+        status: StatusEnum.RUNNING,
       },
       relations: ['seller'],
     });

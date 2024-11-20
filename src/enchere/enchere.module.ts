@@ -10,13 +10,13 @@ import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-import { Subscribers } from 'src/subscribers/subscribers.entity';
+import { Subscription } from 'src/subscribers/subscription.entity';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AuctionNotificationService } from './services/auctionNotification.service';
 import { NotificationService } from './services/notification.service';
 import { EnchereNotification } from './entities/enchereNotification.entity';
 import { EnchereGateway } from './Gateway/EnchereGateway';
-import { SubscribersService } from 'src/subscribers/subscribers.service';
+import { SubscriptionService } from 'src/subscribers/subscription.service';
 
 @Module({
   imports: [
@@ -25,7 +25,7 @@ import { SubscribersService } from 'src/subscribers/subscribers.service';
       Enchere,
       User,
       Role,
-      Subscribers,
+      Subscription,
       EnchereNotification,
     ]),
     ServeStaticModule.forRoot({
@@ -48,7 +48,7 @@ import { SubscribersService } from 'src/subscribers/subscribers.service';
     AuctionNotificationService,
     NotificationService,
     EnchereGateway,
-    SubscribersService,
+    SubscriptionService,
   ],
   exports: [EnchereService],
 })

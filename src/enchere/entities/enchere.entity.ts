@@ -7,7 +7,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { StatusEnum } from '../enums/enums';
-import { Subscribers } from 'src/subscribers/subscribers.entity';
+import { Subscription } from 'src/subscribers/subscription.entity';
 
 @Entity()
 export class Enchere {
@@ -38,8 +38,8 @@ export class Enchere {
   @ManyToOne(() => User, (user) => user.encheres)
   seller: number;
 
-  @OneToMany(() => Subscribers, (subscribers) => subscribers.enchere)
-  subscribers: Subscribers[];
+  @OneToMany(() => Subscription, (subscribers) => subscribers.enchere)
+  subscribers: Subscription[];
 
   @Column({ nullable: true })
   image?: string;

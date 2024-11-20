@@ -3,13 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Enchere } from 'src/enchere/entities/enchere.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
-import { Subscribers } from './subscribers.entity';
+import { Subscription } from './subscription.entity';
 
 @Injectable()
-export class SubscribersService {
+export class SubscriptionService {
   constructor(
-    @InjectRepository(Subscribers)
-    private readonly subscribersRepository: Repository<Subscribers>,
+    @InjectRepository(Subscription)
+    private readonly subscribersRepository: Repository<Subscription>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     @InjectRepository(Enchere)
@@ -17,7 +17,7 @@ export class SubscribersService {
   ) {}
 
   // Subscribe a user to an enchere
-  async subscribe(userId: number, enchereId: number): Promise<Subscribers> {
+  async subscribe(userId: number, enchereId: number): Promise<Subscription> {
     const user = await this.userRepository.findOneBy({ id: userId });
     const enchere = await this.enchereRepository.findOneBy({ id: enchereId });
 
@@ -34,7 +34,7 @@ export class SubscribersService {
   }
 
   // Get all subscribers for an enchere
-  async getSubscribersForEnchere(enchereId: number): Promise<Subscribers[]> {
+  async getSubscriptionForEnchere(enchereId: number): Promise<Subscription[]> {
     return await this.subscribersRepository.find({
       where: { enchere: { id: enchereId } },
       relations: ['user', 'enchere'],

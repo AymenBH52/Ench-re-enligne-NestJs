@@ -1,9 +1,9 @@
 import { Controller, Get, Param, Post } from '@nestjs/common';
-import { SubscribersService } from './subscribers.service';
+import { SubscriptionService } from './subscription.service';
 
 @Controller('subscribers')
-export class SubscribersController {
-  constructor(private readonly subscribersService: SubscribersService) {}
+export class SubscriptionController {
+  constructor(private readonly subscribersService: SubscriptionService) {}
 
   // Subscribe a user to an enchere
   @Post('subscribe/:userId/:enchereId')
@@ -16,8 +16,8 @@ export class SubscribersController {
 
   // Get all subscribers for a specific enchere
   @Get('enchere/:enchereId')
-  async getSubscribersForEnchere(@Param('enchereId') enchereId: number) {
-    return this.subscribersService.getSubscribersForEnchere(enchereId);
+  async getSubscriptionForEnchere(@Param('enchereId') enchereId: number) {
+    return this.subscribersService.getSubscriptionForEnchere(enchereId);
   }
 
   // Get all encheres that a user is subscribed to
