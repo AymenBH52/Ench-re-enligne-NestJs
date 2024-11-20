@@ -44,8 +44,7 @@ export class Enchere {
   @OneToMany(() => Subscription, (subscribers) => subscribers.enchere)
   subscribers: Subscription[];
 
-  @OneToOne(() => Product, { onDelete: 'CASCADE', eager: true })
-  @JoinColumn()
+  @ManyToOne(() => Product, { onDelete: 'CASCADE', eager: true })
   product: Product;
 
   @Column({ nullable: true })
