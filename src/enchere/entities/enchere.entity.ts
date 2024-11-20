@@ -19,7 +19,7 @@ export class Enchere {
 
   @Column()
   description: string;
-
+/* 
   @Column({ type: 'timestamp' })
   startDate: Date;
 
@@ -30,7 +30,7 @@ export class Enchere {
   duration: number;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  createdAt: Date;
+  createdAt: Date; */
 
   @Column('enum', { enum: StatusEnum })
   status: StatusEnum;

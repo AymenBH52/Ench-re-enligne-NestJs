@@ -9,7 +9,8 @@ import { RolesGuard } from './auth/guards/roles.guard';
 import { UsersService } from './users/services/users.service';
 import { UsersModule } from './users/users.module';
 import { EnchereModule } from './enchere/enchere.module';
-import { SubscriptionModule } from './subscribers/subscription.module';
+import { CategoryModule } from './category/category.module';
+import { ProductModule } from './product/product.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -35,7 +36,9 @@ import { SubscriptionModule } from './subscribers/subscription.module';
 
     EnchereModule,
 
-    SubscriptionModule,
+    CategoryModule,
+
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [
