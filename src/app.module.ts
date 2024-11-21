@@ -11,6 +11,7 @@ import { UsersModule } from './users/users.module';
 import { EnchereModule } from './enchere/enchere.module';
 import { CategoryModule } from './category/category.module';
 import { ProductModule } from './product/product.module';
+import { OfferModule } from './offer/offer.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -39,6 +40,7 @@ import { ProductModule } from './product/product.module';
     CategoryModule,
 
     ProductModule,
+    OfferModule,
   ],
   controllers: [AppController],
   providers: [

@@ -63,5 +63,4 @@ export class Enchere {
   //Relation with Offer
   @OneToMany(() => Offer, (offer) => offer.enchere)
   offers: Offer[];
-
 }
