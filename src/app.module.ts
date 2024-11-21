@@ -12,6 +12,7 @@ import { EnchereModule } from './enchere/enchere.module';
 import { CategoryModule } from './category/category.module';
 import { ProductModule } from './product/product.module';
 import { OfferModule } from './offer/offer.module';
+import { SubscriptionModule } from './subscribers/subscription.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -36,9 +37,8 @@ import { OfferModule } from './offer/offer.module';
     }),
 
     EnchereModule,
-
     CategoryModule,
-
+    SubscriptionModule,
     ProductModule,
     OfferModule,
   ],

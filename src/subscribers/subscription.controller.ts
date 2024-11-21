@@ -11,6 +11,8 @@ export class SubscriptionController {
     @Param('userId') userId: number,
     @Param('enchereId') enchereId: number,
   ) {
+    console.log('SUBSCRIBING: ', userId, enchereId);
+
     return this.subscribersService.subscribe(userId, enchereId);
   }
 
