@@ -9,22 +9,23 @@ export class OfferController {
 
   // Creating a new offer for a buyer
   @Post()
-  async createOffer(@Body() createOfferDto: CreateOfferDto) {
+  async createOffer(@Body() createOfferDto: any ){
+    console.log('offer'+ createOfferDto);
 
     return this.offerService.createOffer(createOfferDto);
   }
   
   // Get all offers for a specific enchere
-  @Get('/:enchereId')
-  async getOffersByEnchere(@Param('enchereId') enchereId: number) {
+  // @Get('/:enchereId')
+  // async getOffersByEnchere(@Param('enchereId') enchereId: number) {
 
-    return this.offerService.getOffersByEnchere(enchereId);
-  }
+  //   return this.offerService.getOffersByEnchere(enchereId);
+  // }
 
   // Get the winner offer for a specific enchere
-  @Get('winner/:enchereId')
-  async getWinnerOffer(@Param('enchereId') enchereId: number) {
+  // @Get('winner/:enchereId')
+  // async getWinnerOffer(@Param('enchereId') enchereId: number) {
 
-    return this.offerService.getWinnerOffer(enchereId);
-  }
+  //   return this.offerService.getWinnerOffer(enchereId);
+  // }
 }

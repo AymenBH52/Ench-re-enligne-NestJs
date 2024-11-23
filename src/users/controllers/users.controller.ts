@@ -50,4 +50,6 @@ export class UsersController {
   ): Promise<User> {
     return this.usersService.update(+id, updateUserDto);
   }
+
+  
 }

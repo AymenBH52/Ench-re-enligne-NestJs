@@ -34,6 +34,8 @@ export class EnchereGateway
   private activeUsers: Map<string, User[]> = new Map();
   private userSockets: Map<string, { socketId: string; room: string }> =
     new Map();
+  private offers: Map<string, any[]> = new Map();
+ 
 
   handleConnection(client: Socket) {
     console.log('Client connected:', client.id);
@@ -143,5 +145,43 @@ export class EnchereGateway
   @SubscribeMessage('ping')
   handlePing(client: Socket) {
     client.emit('pong', { timestamp: new Date() });
+  }
+
+  //-------------End Gestion Enchère-------------------------
+
+
+  //-------------Gestion Offer-------------------------
+
+  @SubscribeMessage('NewOffer')
+  async handleNewOffer(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: any,
+  ) {
+    if (!data || !data.auctionId || !data.user) {
+      return { status: 'error', message: 'Invalid data format' };
+    }
+
+    const { auctionId, user, offer } = data;
+
+    const isSubscribed = await this.checkSubscription(
+      user.username,
+      parseInt(auctionId),
+    );
+
+    if (!isSubscribed) {
+      console.log('User is not subscribed to this auction');
+      client.emit('error', {
+        error: 'User is not subscribed to this auction',
+      });
+      return;
+    }
+    console.log('New Offer:', offer);
+    
+    //// Notifier les autres participants
+  this.server.to(auctionId).emit('offerUpdate', {
+    auctionId,
+    offer,
+  });
+
   }
 }

@@ -8,14 +8,16 @@ import { Enchere } from 'src/enchere/entities/enchere.entity';
 import { EnchereService } from 'src/enchere/services/enchere.service';
 import { Role } from 'src/users/entities/role.entity';
 import { User } from 'src/users/entities/user.entity';
+import { UsersService } from 'src/users/services/users.service';
+import { Subscription } from 'src/subscribers/subscription.entity';
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
-    TypeOrmModule.forFeature([Enchere, User, Role, Offer]),
+    TypeOrmModule.forFeature([Enchere, User, Role, Offer, Subscription]),
   ],
   controllers: [OfferController],
-  providers: [OfferService],
+  providers: [OfferService, EnchereService, UsersService],
   exports: [OfferService],
 })
 export class OfferModule {}
