@@ -44,10 +44,30 @@ export class EnchereGateway
     new Map();
   private offers: Map<string, Offer[]> = new Map(); // Store offers for each auction
 
-  handleConnection(client: Socket) {
-    this.logger.log(`Client connected: ${client.id}`);
-  }
+  private kickedUsersSockets: Map<
+    string,
+    { socketId: string; room: string; kickTime: number }
+  > = new Map();
 
+  private readonly KICKED_USER_TIMEOUT = 10 * 60 * 1000;
+
+  handleConnection(client: Socket) {
+    console.log('Client connected:', client.id);
+
+    const kickedUser = this.kickedUsersSockets.get(client.id);
+    if (kickedUser) {
+      const currentTime = Date.now();
+      if (currentTime - kickedUser.kickTime < this.KICKED_USER_TIMEOUT) {
+        client.emit('kicked', {
+          message:
+            'You have been kicked from the auction and cannot reconnect yet',
+        });
+        client.disconnect();
+        return;
+      }
+      this.kickedUsersSockets.delete(client.id);
+    }
+  }
   handleDisconnect(client: Socket) {
     this.logger.log(`Client disconnected: ${client.id}`);
     for (const [username, data] of this.userSockets.entries()) {
@@ -97,11 +117,16 @@ export class EnchereGateway
     );
 
     if (!isSubscribed) {
-      this.logger.warn(
-        `User ${user.username} is not subscribed to auction ${auctionId}`,
-      );
+      console.log('User is not subscribed to this auction');
       client.emit('error', {
         error: 'User is not subscribed to this auction',
+      });
+      return;
+    }
+
+    if (this.kickedUsersSockets.has(user.username)) {
+      client.emit('kicked', {
+        message: 'You have been kicked from the auction',
       });
       return;
     }
@@ -121,33 +146,83 @@ export class EnchereGateway
       (u) => u.username === user.username,
     );
     if (existingUserIndex === -1) {
+      // Add user if they don't exist
       roomUsers.push(user);
     }
 
     await client.join(auctionId);
-    this.logger.log(`Client ${client.id} joined room ${auctionId}`);
-
-    // Send current offers along with join confirmation
-    const currentOffers = this.getAuctionOffers(auctionId);
+    console.log(`Client ${client.id} joined room ${auctionId}`);
 
     this.server.to(auctionId).emit('userJoined', {
       user,
       activeUsers: roomUsers,
-      currentOffers,
       message: `${user.username} joined the auction`,
     });
+    return { status: 'success', message: 'Joined room successfully' };
+  }
 
-    return {
-      status: 'success',
-      message: 'Joined room successfully',
-      currentOffers,
-    };
+  @SubscribeMessage('kickUser')
+  async handleKickUser(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: any,
+  ) {
+    if (!data || !data.auctionId || !data.adminUsername || !data.userToKick) {
+      console.error('Invalid kick user data received:', data);
+      return { status: 'error', message: 'Invalid data format' };
+    }
+
+    const { auctionId, adminUsername, userToKick } = data;
+    const roomUsers = this.activeUsers.get(auctionId);
+
+    const admin = roomUsers?.find((u) => u.username === adminUsername);
+    if (!admin || admin.role.name !== 'admin') {
+      client.emit('error', {
+        error: 'Unauthorized: Only admins can kick users',
+      });
+      return { status: 'error', message: 'Unauthorized' };
+    }
+
+    const userSocket = this.userSockets.get(userToKick);
+    if (userSocket && userSocket.room === auctionId) {
+      // Remove user from active users
+      const updatedUsers = roomUsers.filter((u) => u.username !== userToKick);
+      this.activeUsers.set(auctionId, updatedUsers);
+
+      // Add kicked user to kicked list with the current timestamp
+      this.kickedUsersSockets.set(userToKick, {
+        socketId: userSocket.socketId,
+        room: auctionId,
+        kickTime: Date.now(),
+      });
+
+      // Emit kick event to the specific user
+      this.server.to(userSocket.socketId).emit('kicked', {
+        message: `You have been kicked from the auction by ${adminUsername}`,
+      });
+
+      // Remove user from the room
+      this.server.in(userSocket.socketId).socketsLeave(auctionId);
+      this.userSockets.delete(userToKick);
+
+      // Notify all users in the room about the kick
+      this.server.to(auctionId).emit('userKicked', {
+        kickedUser: userToKick,
+        activeUsers: updatedUsers,
+        message: `${userToKick} was kicked from the auction by ${adminUsername}`,
+      });
+
+      return { status: 'success', message: 'User kicked successfully' };
+    }
+
+    return { status: 'error', message: 'User not found in room' };
   }
 
   @SubscribeMessage('leaveRoom')
   handleLeaveRoom(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
+    console.log('Raw leave room data:', data);
+
     if (!data || !data.auctionId || !data.username) {
-      this.logger.error('Invalid leave room data received:', data);
+      console.error('Invalid leave room data received:', data);
       return;
     }
 
@@ -156,6 +231,7 @@ export class EnchereGateway
 
     const roomUsers = this.activeUsers.get(auctionId);
     if (roomUsers) {
+      // Remove user from room
       const userIndex = roomUsers.findIndex((u) => u.username === username);
       if (userIndex !== -1) {
         const user = roomUsers[userIndex];
@@ -169,6 +245,7 @@ export class EnchereGateway
           message: `${username} left the auction`,
         });
 
+        // Clean up empty room
         if (roomUsers.length === 0) {
           this.activeUsers.delete(auctionId);
         }
